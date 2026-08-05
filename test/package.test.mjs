@@ -8,7 +8,11 @@ test('package metadata meets n8n community-node requirements', () => {
 	assert.equal(packageJson.name, 'n8n-nodes-trustedrouter');
 	assert.equal(packageJson.license, 'MIT');
 	assert.ok(packageJson.keywords.includes('n8n-community-node-package'));
-	assert.equal(packageJson.repository.url, 'https://github.com/Lore-Hex/n8n-nodes-trustedrouter.git');
+	assert.equal(
+		packageJson.repository.url,
+		'git+https://github.com/Lore-Hex/n8n-nodes-trustedrouter.git',
+	);
+	assert.deepEqual(packageJson.publishConfig, { access: 'public' });
 	assert.equal(packageJson.n8n.strict, true);
 });
 

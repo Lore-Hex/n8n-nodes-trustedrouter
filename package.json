@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-trustedrouter",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "Use hundreds of AI models through TrustedRouter in n8n workflows",
 	"license": "MIT",
 	"homepage": "https://trustedrouter.com",
@@ -19,7 +19,10 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Lore-Hex/n8n-nodes-trustedrouter.git"
+		"url": "git+https://github.com/Lore-Hex/n8n-nodes-trustedrouter.git"
+	},
+	"publishConfig": {
+		"access": "public"
 	},
 	"bugs": {
 		"url": "https://github.com/Lore-Hex/n8n-nodes-trustedrouter/issues"
