@@ -54,7 +54,7 @@ test('credential validation uses the live TrustedRouter catalog endpoint', async
 		'../dist/credentials/TrustedRouterApi.credentials.js'
 	);
 	const credential = new TrustedRouterApi();
-	assert.equal(credential.test.request.baseURL, 'https://api.trustedrouter.com/v1');
+	assert.equal(credential.test.request.baseURL, 'https://trustedrouter.com/v1');
 	assert.equal(credential.test.request.url, '/models');
 	assert.equal(credential.properties[0].typeOptions.password, true);
 });

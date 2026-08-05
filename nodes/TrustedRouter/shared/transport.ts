@@ -6,7 +6,10 @@ import type {
 	ILoadOptionsFunctions,
 } from 'n8n-workflow';
 
-export const TRUSTEDROUTER_API_URL = 'https://api.trustedrouter.com/v1';
+export const TRUSTEDROUTER_INFERENCE_API_URL = 'https://api.trustedrouter.com/v1';
+export const TRUSTEDROUTER_CONTROL_API_URL = 'https://trustedrouter.com/v1';
+
+export type TrustedRouterApiPlane = 'inference' | 'control';
 
 type RequestContext = IExecuteFunctions | ILoadOptionsFunctions;
 
@@ -16,10 +19,13 @@ export async function trustedRouterApiRequest(
 	resource: string,
 	body?: IDataObject,
 	headers?: IDataObject,
+	plane: TrustedRouterApiPlane = 'inference',
 ): Promise<unknown> {
+	const baseUrl =
+		plane === 'control' ? TRUSTEDROUTER_CONTROL_API_URL : TRUSTEDROUTER_INFERENCE_API_URL;
 	const options: IHttpRequestOptions = {
 		method,
-		url: `${TRUSTEDROUTER_API_URL}${resource}`,
+		url: `${baseUrl}${resource}`,
 		json: true,
 		returnFullResponse: false,
 	};

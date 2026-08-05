@@ -41,7 +41,7 @@ export class TrustedRouterApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: 'https://api.trustedrouter.com/v1',
+			baseURL: 'https://trustedrouter.com/v1',
 			url: '/models',
 			method: 'GET',
 		},

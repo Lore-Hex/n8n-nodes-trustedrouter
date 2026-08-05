@@ -356,7 +356,14 @@ export class TrustedRouter implements INodeType {
 				const operation = this.getNodeParameter('operation', itemIndex) as string;
 
 				if (resource === 'model' && operation === 'getMany') {
-					const response = (await trustedRouterApiRequest.call(this, 'GET', '/models')) as {
+					const response = (await trustedRouterApiRequest.call(
+						this,
+						'GET',
+						'/models',
+						undefined,
+						undefined,
+						'control',
+					)) as {
 						data?: unknown[];
 					};
 					const returnAll = this.getNodeParameter('returnAll', itemIndex) as boolean;
@@ -372,7 +379,14 @@ export class TrustedRouter implements INodeType {
 				}
 
 				if (resource === 'account' && operation === 'getCredits') {
-					const response = await trustedRouterApiRequest.call(this, 'GET', '/credits');
+					const response = await trustedRouterApiRequest.call(
+						this,
+						'GET',
+						'/credits',
+						undefined,
+						undefined,
+						'control',
+					);
 					returnData.push(...responseItems(response, itemIndex));
 					continue;
 				}

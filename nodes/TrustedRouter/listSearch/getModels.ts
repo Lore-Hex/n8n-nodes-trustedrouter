@@ -36,7 +36,14 @@ export async function getModels(
 	this: ILoadOptionsFunctions,
 	filter?: string,
 ): Promise<INodeListSearchResult> {
-	const response = (await trustedRouterApiRequest.call(this, 'GET', '/models')) as ModelsResponse;
+	const response = (await trustedRouterApiRequest.call(
+		this,
+		'GET',
+		'/models',
+		undefined,
+		undefined,
+		'control',
+	)) as ModelsResponse;
 	const query = filter?.trim().toLowerCase() ?? '';
 	const models = Array.isArray(response.data) ? response.data : [];
 
