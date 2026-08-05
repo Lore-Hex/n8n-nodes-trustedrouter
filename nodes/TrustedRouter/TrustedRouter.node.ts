@@ -397,7 +397,15 @@ export class TrustedRouter implements INodeType {
 					headers['Idempotency-Key'] = options.idempotencyKey.trim();
 				}
 
-				const parameters = { model, input, instructions, messages, options };
+				const parameters = {
+					model,
+					input,
+					instructions,
+					messages,
+					options,
+					node: this.getNode(),
+					itemIndex,
+				};
 				const isResponse = operation === 'response';
 				const body = isResponse
 					? buildResponseBody(parameters)
@@ -418,7 +426,9 @@ export class TrustedRouter implements INodeType {
 					});
 					continue;
 				}
-				if (error instanceof NodeOperationError) throw error;
+				if (error instanceof NodeOperationError) {
+					throw new NodeOperationError(this.getNode(), error, { itemIndex });
+				}
 				throw new NodeApiError(this.getNode(), error as JsonObject, { itemIndex });
 			}
 		}

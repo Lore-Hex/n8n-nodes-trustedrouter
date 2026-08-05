@@ -1,4 +1,5 @@
-import type { IDataObject, INodeExecutionData } from 'n8n-workflow';
+import type { IDataObject, INode, INodeExecutionData } from 'n8n-workflow';
+import { NodeOperationError } from 'n8n-workflow';
 
 export interface TextRequestParameters {
 	model: unknown;
@@ -6,24 +7,31 @@ export interface TextRequestParameters {
 	instructions?: string;
 	messages?: unknown;
 	options?: IDataObject;
+	node: INode;
+	itemIndex: number;
 }
 
-export function locatorValue(value: unknown): string {
+export function locatorValue(value: unknown, node: INode, itemIndex: number): string {
 	if (typeof value === 'string' && value.trim()) return value.trim();
 	if (value && typeof value === 'object' && 'value' in value) {
 		const locator = value as { value?: unknown };
 		if (typeof locator.value === 'string' && locator.value.trim()) return locator.value.trim();
 	}
-	throw new Error("'Model' must contain a model ID");
+	throw new NodeOperationError(node, "'Model' must contain a model ID", { itemIndex });
 }
 
-export function parseJsonValue(value: unknown, fieldName: string): unknown {
+export function parseJsonValue(
+	value: unknown,
+	fieldName: string,
+	node: INode,
+	itemIndex: number,
+): unknown {
 	if (value === undefined || value === null || value === '') return undefined;
 	if (typeof value !== 'string') return value;
 	try {
 		return JSON.parse(value) as unknown;
 	} catch {
-		throw new Error(`'${fieldName}' must contain valid JSON`);
+		throw new NodeOperationError(node, `'${fieldName}' must contain valid JSON`, { itemIndex });
 	}
 }
 
@@ -31,7 +39,12 @@ function nonEmptyString(value: unknown): string | undefined {
 	return typeof value === 'string' && value.trim() ? value.trim() : undefined;
 }
 
-function applySharedOptions(body: IDataObject, options: IDataObject): void {
+function applySharedOptions(
+	body: IDataObject,
+	options: IDataObject,
+	node: INode,
+	itemIndex: number,
+): void {
 	if (typeof options.temperature === 'number') body.temperature = options.temperature;
 	if (typeof options.topP === 'number') body.top_p = options.topP;
 
@@ -50,7 +63,7 @@ function applySharedOptions(body: IDataObject, options: IDataObject): void {
 		['tags', 'tags'],
 		['tools', 'tools'],
 	] as const) {
-		const parsed = parseJsonValue(options[parameterName], parameterName);
+		const parsed = parseJsonValue(options[parameterName], parameterName, node, itemIndex);
 		if (parsed !== undefined) body[apiName] = parsed as IDataObject;
 	}
 }
@@ -77,7 +90,7 @@ export function buildChatCompletionBody(parameters: TextRequestParameters): IDat
 	messages.push({ role: 'user', content: parameters.input });
 
 	const body: IDataObject = {
-		model: locatorValue(parameters.model),
+		model: locatorValue(parameters.model, parameters.node, parameters.itemIndex),
 		messages,
 		stream: false,
 	};
@@ -88,14 +101,14 @@ export function buildChatCompletionBody(parameters: TextRequestParameters): IDat
 	if (options.responseFormat === 'json_object') {
 		body.response_format = { type: 'json_object' };
 	}
-	applySharedOptions(body, options);
+	applySharedOptions(body, options, parameters.node, parameters.itemIndex);
 	return body;
 }
 
 export function buildResponseBody(parameters: TextRequestParameters): IDataObject {
 	const options = parameters.options ?? {};
 	const body: IDataObject = {
-		model: locatorValue(parameters.model),
+		model: locatorValue(parameters.model, parameters.node, parameters.itemIndex),
 		input: parameters.input,
 		store: false,
 		stream: false,
@@ -109,7 +122,7 @@ export function buildResponseBody(parameters: TextRequestParameters): IDataObjec
 	if (options.responseFormat === 'json_object') {
 		body.text = { format: { type: 'json_object' } };
 	}
-	applySharedOptions(body, options);
+	applySharedOptions(body, options, parameters.node, parameters.itemIndex);
 	return body;
 }
 

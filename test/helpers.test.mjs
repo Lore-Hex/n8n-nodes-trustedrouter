@@ -11,23 +11,37 @@ import {
 	simplifyResponse,
 } from '../dist/nodes/TrustedRouter/shared/helpers.js';
 
+const node = {
+	id: '1',
+	name: 'TrustedRouter',
+	type: 'n8n-nodes-trustedrouter.trustedRouter',
+	typeVersion: 1,
+	position: [0, 0],
+	parameters: {},
+};
+
 test('locatorValue accepts resource locator and plain model IDs', () => {
-	assert.equal(locatorValue('trustedrouter/auto'), 'trustedrouter/auto');
-	assert.equal(locatorValue({ mode: 'list', value: 'trustedrouter/zdr' }), 'trustedrouter/zdr');
-	assert.throws(() => locatorValue({ mode: 'id', value: '' }), /Model/);
+	assert.equal(locatorValue('trustedrouter/auto', node, 0), 'trustedrouter/auto');
+	assert.equal(
+		locatorValue({ mode: 'list', value: 'trustedrouter/zdr' }, node, 0),
+		'trustedrouter/zdr',
+	);
+	assert.throws(() => locatorValue({ mode: 'id', value: '' }, node, 0), /Model/);
 });
 
 test('parseJsonValue preserves expressions and validates JSON strings', () => {
-	assert.deepEqual(parseJsonValue('{"only":["anthropic"]}', 'provider'), {
+	assert.deepEqual(parseJsonValue('{"only":["anthropic"]}', 'provider', node, 0), {
 		only: ['anthropic'],
 	});
-	assert.deepEqual(parseJsonValue({ team: 'legal' }, 'tags'), { team: 'legal' });
-	assert.equal(parseJsonValue('', 'metadata'), undefined);
-	assert.throws(() => parseJsonValue('{', 'metadata'), /valid JSON/);
+	assert.deepEqual(parseJsonValue({ team: 'legal' }, 'tags', node, 0), { team: 'legal' });
+	assert.equal(parseJsonValue('', 'metadata', node, 0), undefined);
+	assert.throws(() => parseJsonValue('{', 'metadata', node, 0), /valid JSON/);
 });
 
 test('chat completion request is stateless and preserves routing controls', () => {
 	const body = buildChatCompletionBody({
+		node,
+		itemIndex: 0,
 		model: { mode: 'id', value: 'trustedrouter/auto' },
 		instructions: 'Return JSON.',
 		input: 'Classify this request.',
@@ -63,6 +77,8 @@ test('chat completion request is stateless and preserves routing controls', () =
 
 test('Responses request always disables provider-side state', () => {
 	const body = buildResponseBody({
+		node,
+		itemIndex: 0,
 		model: 'trustedrouter/zdr',
 		input: 'Summarize this.',
 		instructions: 'Use one sentence.',
