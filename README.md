@@ -52,7 +52,7 @@ Restart n8n if the node does not appear immediately.
 
 ### Account
 
-- **Get Credits** returns the current balance and usage for the authenticated workspace.
+- **Get Current Key** returns usage and limits for the authenticated API key.
 
 The node is also marked **Usable as an AI Tool**, so an n8n AI Agent can call it as a workflow tool.
 

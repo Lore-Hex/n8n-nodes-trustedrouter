@@ -3,7 +3,8 @@
 ## 0.1.2
 
 - Route Chat Completions and Responses through the attested inference API.
-- Route credential checks, model catalog reads, and credit reads through the control API.
+- Route credential checks, model catalog reads, and current-key reads through the control API.
+- Replace the management-only credits action with inference-key-safe current-key usage and limits.
 - Add regression coverage for the inference and control-plane boundary.
 
 ## 0.1.0

@@ -99,13 +99,13 @@ export class TrustedRouter implements INodeType {
 				displayOptions: accountDisplayOptions,
 				options: [
 					{
-						name: 'Get Credits',
-						value: 'getCredits',
-						action: 'Get account credits',
-						description: 'Retrieve the current credit balance and usage',
+						name: 'Get Current Key',
+						value: 'getCurrentKey',
+						action: 'Get current API key',
+						description: 'Retrieve usage and limits for the authenticated API key',
 					},
 				],
-				default: 'getCredits',
+				default: 'getCurrentKey',
 			},
 			{
 				displayName: 'Model',
@@ -378,11 +378,11 @@ export class TrustedRouter implements INodeType {
 					continue;
 				}
 
-				if (resource === 'account' && operation === 'getCredits') {
+				if (resource === 'account' && operation === 'getCurrentKey') {
 					const response = await trustedRouterApiRequest.call(
 						this,
 						'GET',
-						'/credits',
+						'/key',
 						undefined,
 						undefined,
 						'control',
