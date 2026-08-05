@@ -23,8 +23,8 @@
 #   1. Log in to npmjs.com and open your package's settings.
 #   2. Under "Publish access" → "Trusted Publishers", click "Add a publisher".
 #   3. Select GitHub Actions and fill in:
-#        Repository owner: <your-github-username-or-org>
-#        Repository name:  <your-repo-name>
+#        Repository owner: Lore-Hex
+#        Repository name:  n8n-nodes-trustedrouter
 #        Workflow name:    publish.yml
 #        Environment:      (leave blank unless you use GitHub Environments)
 #   4. Leave the NPM_TOKEN secret unset in this repository. GitHub's OIDC
@@ -85,6 +85,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Run tests
+        run: npm test
 
       - name: Release
         # Publishes to npm with a provenance attestation (requires id-token: write above).
