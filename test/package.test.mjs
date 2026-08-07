@@ -3,6 +3,25 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const packageJson = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'));
+const nodeCodex = JSON.parse(
+	await readFile(
+		new URL('../nodes/TrustedRouter/TrustedRouter.node.json', import.meta.url),
+		'utf8',
+	),
+);
+
+const allowedNodeCodexCategories = new Set([
+	'Data & Storage',
+	'Finance & Accounting',
+	'Marketing & Content',
+	'Productivity',
+	'Miscellaneous',
+	'Sales',
+	'Development',
+	'Analytics',
+	'Communication',
+	'Utility',
+]);
 
 test('package metadata meets n8n community-node requirements', () => {
 	assert.equal(packageJson.name, 'n8n-nodes-trustedrouter');
@@ -39,6 +58,13 @@ test('package exports only TrustedRouter node and credentials', () => {
 	assert.deepEqual(packageJson.n8n.credentials, [
 		'dist/credentials/TrustedRouterApi.credentials.js',
 	]);
+});
+
+test('node codex uses only categories supported by the n8n UI', () => {
+	assert.deepEqual(nodeCodex.categories, ['Development']);
+	assert.ok(
+		nodeCodex.categories.every((category) => allowedNodeCodexCategories.has(category)),
+	);
 });
 
 test('node is usable as an AI tool and does not claim to be an AI language-model node', async () => {

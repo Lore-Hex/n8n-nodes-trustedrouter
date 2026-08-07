@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.3
+
+- Use the supported `Development` node codex category required by the n8n UI.
+- Add regression coverage for n8n's documented node codex category set.
+
 ## 0.1.2
 
 - Route Chat Completions and Responses through the attested inference API.
